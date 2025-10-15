@@ -1,0 +1,49 @@
+name: "Bug Report"
+description: "Create a report to help us improve."
+title: "[Bug] "
+assignees: []
+
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: "Description"
+      description: "A clear and concise description of what the bug is."
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: environments
+    attributes:
+      label: "Environments"
+      description: "Environments affected by this issue:"
+      options:
+        - label: "Production"
+        - label: "Staging"
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: "To Reproduce"
+      description: "Steps to reproduce the behavior:"
+      placeholder: |
+        1. Go to '...'
+        2. Click on '....' 
+        3. Scroll down to '....'
+        4. See error
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: "Expected behavior"
+      description: "A clear and concise description of what you expected to happen."
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: "Additional context"
+      description: "Add any other context about the problem here."

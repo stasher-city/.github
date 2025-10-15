@@ -1,0 +1,78 @@
+name: "✨ Feature request"
+description: "Suggest an idea for this project"
+title: "[Feature] "
+labels: ["enhancement"]
+assignees: []
+
+body:
+  - type: textarea
+    id: overview
+    attributes:
+      label: "Overview"
+      description: "Overview of the new feature and how it should help the business (the problem it is solving or the value it adds)."
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: "Proposed solution"
+      description: "A clear and concise description of what you want to happen."
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: "Alternatives you've considered"
+      description: "A clear and concise description of any alternative solutions or features you've considered."
+      placeholder: "This field is optional."
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: "Additional context"
+      description: "Add any other context or screenshots about the feature request here."
+      placeholder: "This field is optional."
+    validations:
+      required: false
+
+  - type: textarea
+    id: business-value
+    attributes:
+      label: "Business value"
+      description: "How is this feature going to help the business? List value lines here."
+      placeholder: |
+        - %Value line%
+        - %Value line%
+        - %Value line%
+    validations:
+      required: true
+
+  - type: textarea
+    id: test-cases
+    attributes:
+      label: "Test Cases"
+      description: "Link to Test Cases PR -OR- provide Ghirkin syntax."
+      render: gfm
+      placeholder: |
+        🔗 Link to Test Cases PR - OR - 🥒 Ghirkin syntax e.g.:
+
+        ```gherkin
+        Feature: Search
+            Scenario: Search as a logged-out user
+               Given I'm a new user
+                  And Navigated to search page
+                  And Filled Search Form with location = london and drop off = now and pickup = tomorrow same time
+               When  I Click search
+               Then  Search Results screen should be visible with 20 results
+        
+            Scenario: Search as a logged-in user
+               Given ...
+               When  ...
+               Then  ...
+        ```
+    validations:
+      required: false
