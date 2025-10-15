@@ -6,6 +6,16 @@ labels: []
 assignees: []
 
 body:
+  - type: dropdown
+    id: environments
+    attributes:
+      label: "Environments"
+      description: "Environments affected by this issue:"
+      options:
+        - Production
+        - Staging
+      default: 1
+
   - type: textarea
     id: description
     attributes:
@@ -14,14 +24,6 @@ body:
     validations:
       required: true
 
-  - type: checkboxes
-    id: environments
-    attributes:
-      label: "Environments"
-      description: "Environments affected by this issue:"
-      options:
-        - label: "Production"
-        - label: "Staging"
 
   - type: textarea
     id: reproduction
@@ -29,10 +31,10 @@ body:
       label: "To Reproduce"
       description: "Steps to reproduce the behavior:"
       placeholder: |
-        1. Go to '...'
-        2. Click on '....' 
-        3. Scroll down to '....'
-        4. See error
+        1. Go to ...
+        2. Click on ... 
+        3. Scroll down to ...
+        4. ...
     validations:
       required: true
 

@@ -56,24 +56,6 @@ body:
     id: test-cases
     attributes:
       label: "Test Cases"
-      description: "Link to Test Cases PR -OR- provide Ghirkin syntax."
-      render: gfm
-      placeholder: |
-        🔗 Link to Test Cases PR - OR - 🥒 Ghirkin syntax e.g.:
-
-        ```gherkin
-        Feature: Search
-            Scenario: Search as a logged-out user
-               Given I'm a new user
-                  And Navigated to search page
-                  And Filled Search Form with location = london and drop off = now and pickup = tomorrow same time
-               When  I Click search
-               Then  Search Results screen should be visible with 20 results
-        
-            Scenario: Search as a logged-in user
-               Given ...
-               When  ...
-               Then  ...
-        ```
+      description: "🔗 Link to Test Cases PR - OR - 🥒 Ghirkin syntax"
     validations:
       required: true
