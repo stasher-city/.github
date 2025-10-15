@@ -2,11 +2,11 @@
 blank_issues_enabled: false
 
 # Add links to external resources at the bottom of the issue chooser.
-contact_links:
-  - name: 💬 Ask a question on our community forum
-    url: https://your-community-forum.com
-    about: Please ask and answer general questions here.
-
-  - name: 🔒 Report a security vulnerability
-    url: https://bounty.your-company.com
-    about: Please report security vulnerabilities to our bug bounty program.
+#contact_links:
+#  - name: 💬 Ask a question on our community forum
+#    url: https://your-community-forum.com
+#    about: Please ask and answer general questions here.
+#
+#  - name: 🔒 Report a security vulnerability
+#    url: https://bounty.your-company.com
+#    about: Please report security vulnerabilities to our bug bounty program.
