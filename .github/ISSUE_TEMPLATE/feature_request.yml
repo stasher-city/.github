@@ -1,7 +1,7 @@
 name: "✨ Feature request"
 description: "Suggest an idea for this project"
 title: "[Feature] "
-labels: ["enhancement"]
+labels: []
 assignees: []
 
 body:
@@ -75,4 +75,4 @@ body:
                Then  ...
         ```
     validations:
-      required: false
+      required: true
