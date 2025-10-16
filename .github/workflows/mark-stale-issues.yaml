@@ -16,7 +16,7 @@ jobs:
       ORG: stasher-city
       DAYS: "14"
       FIELD_NAME: is_stale
-      STALE_OPTION: Is stale
+      STALE_OPTION: Stale
       # Labels to exclude from stale marking (comma-separated)
       EXCLUDE_LABELS: "on-hold,blocked"
 
