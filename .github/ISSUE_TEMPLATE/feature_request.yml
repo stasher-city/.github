@@ -15,10 +15,31 @@ body:
       required: true
 
   - type: textarea
+    id: business-value
+    attributes:
+      label: "Business value"
+      description: "How is this feature going to help the business? List value lines here."
+      placeholder: |
+        - %Value line%
+        - %Value line%
+        - %Value line%
+    validations:
+      required: true
+
+
+  - type: textarea
     id: solution
     attributes:
       label: "Proposed solution"
       description: "A clear and concise description of what you want to happen."
+    validations:
+      required: true
+
+  - type: textarea
+    id: test-cases
+    attributes:
+      label: "Test Cases"
+      description: "🔗 Link to Test Cases PR - OR - 🥒 Gherkin syntax"
     validations:
       required: true
 
@@ -39,23 +60,3 @@ body:
       placeholder: "This field is optional."
     validations:
       required: false
-
-  - type: textarea
-    id: business-value
-    attributes:
-      label: "Business value"
-      description: "How is this feature going to help the business? List value lines here."
-      placeholder: |
-        - %Value line%
-        - %Value line%
-        - %Value line%
-    validations:
-      required: true
-
-  - type: textarea
-    id: test-cases
-    attributes:
-      label: "Test Cases"
-      description: "🔗 Link to Test Cases PR - OR - 🥒 Ghirkin syntax"
-    validations:
-      required: true
