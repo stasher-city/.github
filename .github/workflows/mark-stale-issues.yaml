@@ -82,29 +82,45 @@ jobs:
 
             // Update project field value
             async function setSingleSelect(projectId, itemId, fieldId, optionId) {
-              const mutation = `
-                mutation($projectId: ID!, $itemId: ID!, $fieldId: ID!, $optionId: String!) {
-                  updateProjectV2ItemFieldValue(
-                    input: {
-                      projectId: $projectId,
-                      itemId: $itemId,
-                      fieldId: $fieldId,
-                      value: { singleSelectOptionId: $optionId }
-                    }
-                  ) { projectV2Item { id } }
-                }`;
-              await github.graphql(mutation, { projectId, itemId, fieldId, optionId });
+              try {
+                const mutation = `
+                  mutation($projectId: ID!, $itemId: ID!, $fieldId: ID!, $optionId: String!) {
+                    updateProjectV2ItemFieldValue(
+                      input: {
+                        projectId: $projectId,
+                        itemId: $itemId,
+                        fieldId: $fieldId,
+                        value: { singleSelectOptionId: $optionId }
+                      }
+                    ) { projectV2Item { id } }
+                  }`;
+                await github.graphql(mutation, { projectId, itemId, fieldId, optionId });
+              } catch (error) {
+                if (error.message.includes('archived and cannot be updated')) {
+                  core.info(`Skipping archived item: ${itemId}`);
+                } else {
+                  throw error;
+                }
+              }
             }
 
             // Clear project field value
             async function clearField(projectId, itemId, fieldId) {
-              const mutation = `
-                mutation($projectId: ID!, $itemId: ID!, $fieldId: ID!) {
-                  clearProjectV2ItemFieldValue(
-                    input: { projectId: $projectId, itemId: $itemId, fieldId: $fieldId }
-                  ) { projectV2Item { id } }
-                }`;
-              await github.graphql(mutation, { projectId, itemId, fieldId });
+              try {
+                const mutation = `
+                  mutation($projectId: ID!, $itemId: ID!, $fieldId: ID!) {
+                    clearProjectV2ItemFieldValue(
+                      input: { projectId: $projectId, itemId: $itemId, fieldId: $fieldId }
+                    ) { projectV2Item { id } }
+                  }`;
+                await github.graphql(mutation, { projectId, itemId, fieldId });
+              } catch (error) {
+                if (error.message.includes('archived and cannot be updated')) {
+                  core.info(`Skipping archived item: ${itemId}`);
+                } else {
+                  throw error;
+                }
+              }
             }
 
             // Get all project items for an issue (only from Stashboard v2 project)
@@ -113,6 +129,7 @@ jobs:
                 query($owner: String!, $repo: String!, $number: Int!) {
                   repository(owner: $owner, name: $repo) {
                     issue(number: $number) {
+                      isArchived
                       projectItems(first: 20) {
                         nodes {
                           id
@@ -133,7 +150,15 @@ jobs:
                 }`;
               
               const { repository } = await github.graphql(query, { owner, repo, number: issue_number });
-              const allItems = repository?.issue?.projectItems?.nodes ?? [];
+              const issue = repository?.issue;
+              
+              // Skip if the issue itself is archived
+              if (issue?.isArchived) {
+                core.info(`Skipping archived issue: ${owner}/${repo}#${issue_number}`);
+                return [];
+              }
+              
+              const allItems = issue?.projectItems?.nodes ?? [];
               
               // Filter to only include items from "Stashboard v2" project
               return allItems.filter(item => item.project.title === "Stashboard v2");
