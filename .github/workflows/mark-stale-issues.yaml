@@ -107,7 +107,7 @@ jobs:
               await github.graphql(mutation, { projectId, itemId, fieldId });
             }
 
-            // Get all project items for an issue
+            // Get all project items for an issue (only from Stashboard v2 project)
             async function getIssueProjectItems(owner, repo, issue_number) {
               const query = `
                 query($owner: String!, $repo: String!, $number: Int!) {
@@ -133,7 +133,10 @@ jobs:
                 }`;
               
               const { repository } = await github.graphql(query, { owner, repo, number: issue_number });
-              return repository?.issue?.projectItems?.nodes ?? [];
+              const allItems = repository?.issue?.projectItems?.nodes ?? [];
+              
+              // Filter to only include items from "Stashboard v2" project
+              return allItems.filter(item => item.project.title === "Stashboard v2");
             }
 
             // Process issues: mark stale or clear stale status
@@ -175,6 +178,7 @@ jobs:
               `org:${org}`,
               `is:issue`,
               `is:open`,
+              `-is:archived`,
               `updated:<${cutoffISO}`,
               ...excludeLabels.map(l => `-label:${l}`)
             ].join(" ");
@@ -187,6 +191,7 @@ jobs:
               `org:${org}`,
               `is:issue`,
               `is:open`,
+              `-is:archived`,
               `updated:>=${cutoffISO}`
             ].join(" ");
 
