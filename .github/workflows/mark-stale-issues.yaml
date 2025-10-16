@@ -129,7 +129,7 @@ jobs:
                 query($owner: String!, $repo: String!, $number: Int!) {
                   repository(owner: $owner, name: $repo) {
                     issue(number: $number) {
-                      isArchived
+                      state
                       projectItems(first: 20) {
                         nodes {
                           id
@@ -152,9 +152,9 @@ jobs:
               const { repository } = await github.graphql(query, { owner, repo, number: issue_number });
               const issue = repository?.issue;
               
-              // Skip if the issue itself is archived
-              if (issue?.isArchived) {
-                core.info(`Skipping archived issue: ${owner}/${repo}#${issue_number}`);
+              // Skip if the issue is closed (which includes archived)
+              if (issue?.state === 'CLOSED') {
+                core.info(`Skipping closed issue: ${owner}/${repo}#${issue_number}`);
                 return [];
               }
               
