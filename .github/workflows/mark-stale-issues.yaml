@@ -1,0 +1,196 @@
+name: Mark & clear stale issues across org
+
+on:
+  schedule:
+    # Weekdays 09:15 Europe/London (cron runs in UTC; update for DST as desired)
+    - cron: "15 8 * * 1-5"
+  workflow_dispatch:
+
+jobs:
+  stale_and_clear:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    env:
+      ORG: stasher-city
+      DAYS: "14"
+      FIELD_NAME: is_stale
+      STALE_OPTION: Yes
+      # Labels to exclude from stale marking (comma-separated)
+      EXCLUDE_LABELS: "on-hold,blocked"
+
+    steps:
+      - name: Mark stale & clear fresh
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.ORG_PAT_ISSUE_ACTION }}
+          script: |
+            const org = process.env.ORG;
+            const days = parseInt(process.env.DAYS || "14", 10);
+            const FIELD_NAME = process.env.FIELD_NAME;
+            const STALE_OPTION = process.env.STALE_OPTION;
+            const excludeLabels = (process.env.EXCLUDE_LABELS || "")
+              .split(",").map(s => s.trim()).filter(Boolean);
+
+            const now = new Date();
+            const cutoffDate = new Date(now.getTime() - days*24*60*60*1000);
+            const cutoffISO = cutoffDate.toISOString().slice(0,10);
+
+            // Cache project field/option IDs
+            const fieldCache = new Map();
+            async function getFieldIdsForProject(projectId) {
+              if (fieldCache.has(projectId)) return fieldCache.get(projectId);
+
+              const query = `
+                query($projectId: ID!) {
+                  node(id: $projectId) {
+                    ... on ProjectV2 {
+                      fields(first: 100) {
+                        nodes {
+                          __typename
+                          ... on ProjectV2SingleSelectField {
+                            id
+                            name
+                            options { id name }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }`;
+              
+              const { node } = await github.graphql(query, { projectId });
+              if (!node) { 
+                fieldCache.set(projectId, null); 
+                return null; 
+              }
+
+              const field = node.fields.nodes.find(f =>
+                f.__typename === "ProjectV2SingleSelectField" && f.name === FIELD_NAME
+              );
+              if (!field) { 
+                fieldCache.set(projectId, null); 
+                return null; 
+              }
+
+              const option = field.options.find(o => o.name === STALE_OPTION);
+              const result = option ? { fieldId: field.id, staleOptionId: option.id } : null;
+              fieldCache.set(projectId, result);
+              return result;
+            }
+
+            // Update project field value
+            async function setSingleSelect(projectId, itemId, fieldId, optionId) {
+              const mutation = `
+                mutation($projectId: ID!, $itemId: ID!, $fieldId: ID!, $optionId: String!) {
+                  updateProjectV2ItemFieldValue(
+                    input: {
+                      projectId: $projectId,
+                      itemId: $itemId,
+                      fieldId: $fieldId,
+                      value: { singleSelectOptionId: $optionId }
+                    }
+                  ) { projectV2Item { id } }
+                }`;
+              await github.graphql(mutation, { projectId, itemId, fieldId, optionId });
+            }
+
+            // Clear project field value
+            async function clearField(projectId, itemId, fieldId) {
+              const mutation = `
+                mutation($projectId: ID!, $itemId: ID!, $fieldId: ID!) {
+                  clearProjectV2ItemFieldValue(
+                    input: { projectId: $projectId, itemId: $itemId, fieldId: $fieldId }
+                  ) { projectV2Item { id } }
+                }`;
+              await github.graphql(mutation, { projectId, itemId, fieldId });
+            }
+
+            // Get all project items for an issue
+            async function getIssueProjectItems(owner, repo, issue_number) {
+              const query = `
+                query($owner: String!, $repo: String!, $number: Int!) {
+                  repository(owner: $owner, name: $repo) {
+                    issue(number: $number) {
+                      projectItems(first: 20) {
+                        nodes {
+                          id
+                          project { id title }
+                          fieldValues(first: 50) {
+                            nodes {
+                              __typename
+                              ... on ProjectV2ItemFieldSingleSelectValue {
+                                field { ... on ProjectV2SingleSelectField { id name } }
+                                name
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }`;
+              
+              const { repository } = await github.graphql(query, { owner, repo, number: issue_number });
+              return repository?.issue?.projectItems?.nodes ?? [];
+            }
+
+            // Process issues: mark stale or clear stale status
+            async function processIssues(query, action) {
+              const issues = await github.paginate(
+                github.rest.search.issuesAndPullRequests,
+                { q: query, per_page: 100 }
+              );
+
+              for (const issue of issues) {
+                const [owner, repo] = issue.repository_url.split("/").slice(-2);
+                const issue_number = issue.number;
+
+                const projectItems = await getIssueProjectItems(owner, repo, issue_number);
+                
+                for (const item of projectItems) {
+                  const projectId = item.project.id;
+                  const fieldIds = await getFieldIdsForProject(projectId);
+                  if (!fieldIds) continue;
+
+                  const currentValue = (item.fieldValues?.nodes || []).find(n =>
+                    n.__typename === "ProjectV2ItemFieldSingleSelectValue" &&
+                    n.field?.name === FIELD_NAME
+                  );
+
+                  if (action === "mark" && currentValue?.name !== STALE_OPTION) {
+                    await setSingleSelect(projectId, item.id, fieldIds.fieldId, fieldIds.staleOptionId);
+                    core.info(`MARK: ${owner}/${repo}#${issue_number} → ${FIELD_NAME}=${STALE_OPTION}`);
+                  } else if (action === "clear" && currentValue?.name === STALE_OPTION) {
+                    await clearField(projectId, item.id, fieldIds.fieldId);
+                    core.info(`CLEAR: ${owner}/${repo}#${issue_number} → cleared ${FIELD_NAME}`);
+                  }
+                }
+              }
+            }
+
+            // 1. Mark stale issues (only in Dummy repo)
+            const staleQuery = [
+              `repo:${org}/Dummy`,
+              `is:issue`,
+              `is:open`,
+              `updated:<${cutoffISO}`,
+              ...excludeLabels.map(l => `-label:${l}`)
+            ].join(" ");
+
+            core.info(`Marking stale issues: ${staleQuery}`);
+            await processIssues(staleQuery, "mark");
+
+            // 2. Clear stale status for recently active issues (only in Dummy repo)
+            const freshQuery = [
+              `repo:${org}/Dummy`,
+              `is:issue`,
+              `is:open`,
+              `updated:>=${cutoffISO}`
+            ].join(" ");
+
+            core.info(`Clearing stale status: ${freshQuery}`);
+            await processIssues(freshQuery, "clear");
+
+            core.info("Done processing stale issues.");
