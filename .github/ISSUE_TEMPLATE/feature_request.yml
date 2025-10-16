@@ -3,7 +3,7 @@ name: "✨ Feature request"
 description: "Suggest an idea for this project"
 title: "[Feature] "
 labels: []
-assignees: []
+assignees: [lukegarbutt]
 
 body:
   - type: textarea
