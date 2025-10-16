@@ -5,6 +5,7 @@ title: "[Bug] "
 labels: []
 assignees: []
 
+
 body:
   - type: dropdown
     id: environments
@@ -15,6 +16,21 @@ body:
         - Production
         - Staging
       default: 1
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: "Severity"
+      description: "Bug's impact on the software's functionality, performance, and user experience:"
+      options:
+        - Critical
+        - Major
+        - Minor
+        - Trivial
+      default: 2
+    validations:
+      required: true
+
 
   - type: textarea
     id: description
