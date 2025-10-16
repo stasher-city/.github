@@ -16,7 +16,7 @@ jobs:
       ORG: stasher-city
       DAYS: "14"
       FIELD_NAME: is_stale
-      STALE_OPTION: Yes
+      STALE_OPTION: Is stale
       # Labels to exclude from stale marking (comma-separated)
       EXCLUDE_LABELS: "on-hold,blocked"
 
@@ -170,9 +170,9 @@ jobs:
               }
             }
 
-            // 1. Mark stale issues (only in Dummy repo)
+            // 1. Mark stale issues
             const staleQuery = [
-              `repo:${org}/Dummy`,
+              `org:${org}`,
               `is:issue`,
               `is:open`,
               `updated:<${cutoffISO}`,
@@ -182,9 +182,9 @@ jobs:
             core.info(`Marking stale issues: ${staleQuery}`);
             await processIssues(staleQuery, "mark");
 
-            // 2. Clear stale status for recently active issues (only in Dummy repo)
+            // 2. Clear stale status for recently active issues
             const freshQuery = [
-              `repo:${org}/Dummy`,
+              `org:${org}`,
               `is:issue`,
               `is:open`,
               `updated:>=${cutoffISO}`
