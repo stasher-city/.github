@@ -1,7 +1,7 @@
 type: 'Task'
 name: "🔧 Technical Task"
 description: "A Technical task"
-title: "Task: "
+title: "[Task] "
 labels: []
 assignees: []
 

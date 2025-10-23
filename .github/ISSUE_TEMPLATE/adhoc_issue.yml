@@ -1,9 +1,9 @@
-type: 'Feature'
-name: "✨ Feature request"
-description: "Suggest an idea for this project"
-title: "[Feature] "
+type: 'Task'
+name: "🫠 Adhoc Request"
+description: "Something unplanned that needs to skip planning queue"
+title: "[AdHoc] "
 labels: []
-assignees: [lukegarbutt]
+assignees: []
 
 body:
   - type: textarea
@@ -20,18 +20,17 @@ body:
       label: "Business value"
       description: "How is this feature going to help the business? List value lines here."
       placeholder: |
-        - %Value line%
-        - %Value line%
-        - %Value line%
+        - %Value line 1%
+        - %Value line 2%
+        - ...
     validations:
       required: true
 
-
   - type: textarea
-    id: solution
+    id: acceptance-criteria
     attributes:
-      label: "Proposed solution"
-      description: "A clear and concise description of what you want to happen."
+      label: "Acceptance Criteria"
+      description: "What is the business acceptance criteria for this issue to be released?"
     validations:
       required: true
 
@@ -40,23 +39,17 @@ body:
     attributes:
       label: "Test Cases"
       description: "🔗 Link to Test Cases PR - OR - 🥒 Gherkin syntax"
-    validations:
-      required: true
 
   - type: textarea
-    id: alternatives
+    id: risks
     attributes:
-      label: "Alternatives you've considered"
-      description: "A clear and concise description of any alternative solutions or features you've considered."
-      placeholder: "This field is optional."
-    validations:
-      required: false
+      label: "Risks / Edge Cases"
+      description: "Anything that might cause delays or complications or impact other system/business functionality."
 
   - type: textarea
     id: additional-context
     attributes:
       label: "Additional context"
       description: "Add any other context or screenshots about the feature request here."
-      placeholder: "This field is optional."
     validations:
       required: false

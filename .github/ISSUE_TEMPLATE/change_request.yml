@@ -1,0 +1,67 @@
+type: 'Feature'
+name: "✨ CR (Change Request)"
+description: "Suggest an idea for this project"
+title: "[CR] "
+labels: []
+assignees: [lukegarbutt]
+
+body:
+  - type: textarea
+    id: overview
+    attributes:
+      label: "Overview"
+      description: "Overview of the new feature and how it should help the business (the problem it is solving or the value it adds)."
+    validations:
+      required: true
+
+  - type: textarea
+    id: business-value
+    attributes:
+      label: "Business value"
+      description: "How is this feature going to help the business? List value lines here."
+      placeholder: |
+        - %Value line 1%
+        - %Value line 2%
+        - ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: "Proposed solution"
+      description: "A clear and concise description of what you want to happen."
+    validations:
+      required: true
+
+  - type: textarea
+    id: test-cases
+    attributes:
+      label: "Test Cases"
+      description: "🔗 Link to Test Cases PR - OR - 🥒 Gherkin syntax"
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: "Alternatives you've considered"
+      description: "A clear and concise description of any alternative solutions or features you've considered."
+      placeholder: "This field is optional."
+    validations:
+      required: false
+
+  - type: textarea
+    id: risks
+    attributes:
+      label: "Risks / Edge Cases"
+      description: "Anything that might cause delays or complications or impact other system/business functionality."
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: "Additional context"
+      description: "Add any other context or screenshots about the feature request here."
+      placeholder: "This field is optional."
+    validations:
+      required: false
