@@ -3,7 +3,7 @@ name: "🔧 Technical Task"
 description: "A Technical task"
 title: "[Task] "
 labels: []
-assignees: []
+assignees: [$USER]
 
 body:
   - type: textarea

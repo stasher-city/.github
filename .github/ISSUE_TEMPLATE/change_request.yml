@@ -3,7 +3,7 @@ name: "✨ CR (Change Request)"
 description: "Suggest an idea for this project"
 title: "[CR] "
 labels: []
-assignees: [lukegarbutt]
+assignees: ['$USER']
 
 body:
   - type: textarea
