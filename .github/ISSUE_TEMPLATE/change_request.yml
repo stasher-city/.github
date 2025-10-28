@@ -35,12 +35,26 @@ body:
       required: true
 
   - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: "Acceptance Criteria"
+      description: "What are the minimum requirements to be fulfilled."
+    validations:
+      required: true
+
+  - type: textarea
     id: test-cases
     attributes:
       label: "Test Cases"
       description: "🔗 Link to Test Cases PR - OR - 🥒 Gherkin syntax"
     validations:
       required: true
+
+  - type: textarea
+    id: technical-considerations
+    attributes:
+      label: "Technical Considerations"
+      description: "Notes like dependencies, APIs, rollout strategy ...etc."
 
   - type: textarea
     id: alternatives
