@@ -52,6 +52,12 @@ body:
       required: false
 
   - type: textarea
+    id: data-analysis
+    attributes:
+      label: "Data & Analytics"
+      description: "Events to track, dashboards to update, or experiments to run."
+
+  - type: textarea
     id: risks
     attributes:
       label: "Risks / Edge Cases"
