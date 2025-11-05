@@ -47,8 +47,8 @@ body:
     attributes:
       label: "Test Cases"
       description: "🔗 Link to Test Cases PR - OR - 🥒 Gherkin syntax"
-    validations:
-      required: true
+    # validations:
+    #   required: true
 
   - type: textarea
     id: technical-considerations
