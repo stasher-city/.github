@@ -96,7 +96,9 @@ jobs:
                   }`;
                 await github.graphql(mutation, { projectId, itemId, fieldId, optionId });
               } catch (error) {
-                if (error.message.includes('archived and cannot be updated')) {
+                const errorMsg = error.message || '';
+                const errorString = JSON.stringify(error).toLowerCase();
+                if (errorMsg.toLowerCase().includes('archived') || errorString.includes('archived')) {
                   core.info(`Skipping archived item: ${itemId}`);
                 } else {
                   throw error;
@@ -115,7 +117,9 @@ jobs:
                   }`;
                 await github.graphql(mutation, { projectId, itemId, fieldId });
               } catch (error) {
-                if (error.message.includes('archived and cannot be updated')) {
+                const errorMsg = error.message || '';
+                const errorString = JSON.stringify(error).toLowerCase();
+                if (errorMsg.toLowerCase().includes('archived') || errorString.includes('archived')) {
                   core.info(`Skipping archived item: ${itemId}`);
                 } else {
                   throw error;
@@ -133,6 +137,7 @@ jobs:
                       projectItems(first: 20) {
                         nodes {
                           id
+                          isArchived
                           project { id title }
                           fieldValues(first: 50) {
                             nodes {
@@ -160,8 +165,10 @@ jobs:
               
               const allItems = issue?.projectItems?.nodes ?? [];
               
-              // Filter to only include items from "Stashboard v2" project
-              return allItems.filter(item => item.project.title === "Stashboard v2");
+              // Filter to only include items from "Stashboard v2" project that are not archived
+              return allItems.filter(item => 
+                item.project.title === "Stashboard v2" && !item.isArchived
+              );
             }
 
             // Process issues: mark stale or clear stale status
