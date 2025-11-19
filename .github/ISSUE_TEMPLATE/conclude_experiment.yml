@@ -1,0 +1,36 @@
+type: "Conclude Experiment"
+name: "🔧 Conclude Experiment"
+description: "Conclude an experiment"
+title: "[Conclude Experiment] "
+labels: []
+assignees: [$USER]
+
+body:
+  - type: textarea
+    id: overview
+    attributes:
+      label: "Link to original experiment"
+      description: "Link to the original experiment issue."
+    validations:
+      required: true
+  - type: textarea
+    id: conclusion
+    attributes:
+      label: "Conclusion"
+      description: "What was the outcome of the experiment?"
+    validations:
+      required: true
+  - type: textarea
+    id: rollout-variant
+    attributes:
+      label: "Rollout Variant"
+      description: "What variant should we be using going forward?"
+    validations:
+      required: true
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: "Additional context"
+      description: "Add any other context about the experiment here."
+    validations:
+      required: false
