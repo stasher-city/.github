@@ -1,0 +1,15 @@
+type: 'Discovery'
+name: "🔍 Discovery Ticket"
+description: "A Discovery ticket"
+title: "[Discovery] "
+labels: []
+assignees: [$USER]
+
+body:
+  - type: textarea
+    id: overview
+    attributes:
+      label: "Overview"
+      description: "Overview of the task."
+    validations:
+      required: true
