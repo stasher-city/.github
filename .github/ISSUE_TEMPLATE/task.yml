@@ -12,4 +12,4 @@ body:
       label: "Overview"
       description: "Overview of the task."
     validations:
-      required: true
+      required: false
