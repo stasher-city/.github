@@ -12,7 +12,7 @@ body:
       label: "Overview"
       description: "Overview of the new feature and how it should help the business (the problem it is solving or the value it adds)."
     validations:
-      required: true
+      required: false
 
   - type: textarea
     id: business-value
@@ -24,7 +24,7 @@ body:
         - %Value line 2%
         - ...
     validations:
-      required: true
+      required: false
 
   - type: textarea
     id: acceptance-criteria
@@ -32,7 +32,7 @@ body:
       label: "Acceptance Criteria"
       description: "What are the minimum requirements to be fulfilled."
     validations:
-      required: true
+      required: false
 
   - type: textarea
     id: solution
